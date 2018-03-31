@@ -15,7 +15,7 @@ public class SocketServer extends ThreadedSocketServer {
     }
 
     @Override
-    public void handleConnection(Socket socket, int node) throws IOException {
+    public void handleConnection(Socket socket) throws IOException {
         DataInputStream inputStream = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
         String inputString;
         while(!isTerminated) {
@@ -30,7 +30,8 @@ public class SocketServer extends ThreadedSocketServer {
             }
         }
         if (isTerminated) {
-            System.out.printf("Connection %d: Hasta la vista, baby...%n", node);
+            // try and close as many connections as possible before a hard shutdown
+            System.out.printf("Connection %d: Hasta la vista, baby...%n", connectionCounter--);
             closeAllConnections(socket, inputStream);
             System.exit(0);
         }

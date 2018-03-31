@@ -8,6 +8,6 @@ public class SimpleClient {
     public static void main(String[] args) throws Exception {
         new StatusThread().start();
         Executor tasks = Executors.newFixedThreadPool(6);
-        IntStream.rangeClosed(1, 9).forEach(i -> tasks.execute(new Client("127.0.0.1", 4000)));
+        IntStream.rangeClosed(1, 7).forEach(i -> tasks.execute(new Client("127.0.0.1", 4000)));
     }
 }

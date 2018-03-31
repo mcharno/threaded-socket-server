@@ -26,17 +26,16 @@ public class Client implements Runnable {
             while (true) {
                 long randomNumber = (long) Math.floor(Math.random() * 900000000L) + 100000000L;
                 output.writeUTF(String.valueOf(randomNumber));
-                if (i.incrementAndGet() % 1000000 == 0) {
-                    i.incrementAndGet();
+
+                if (i.incrementAndGet() % 20000000 == 0) {
                     System.out.println("TERMINATING!!! ");
                     output.writeUTF("terminate");
-                }
-                if (i.incrementAndGet() % 1000000 == 0) {
-                    i.incrementAndGet();
+                } else if (i.incrementAndGet() % 5000000 == 0) {
                     System.out.println("INVALID ID!!!");
                     output.writeUTF("testing");
+                } else {
+                    i.incrementAndGet();
                 }
-                i.incrementAndGet();
             }
         } catch (IOException ioex) {
             closeConnections();

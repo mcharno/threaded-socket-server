@@ -13,6 +13,7 @@ public class InputStatus {
     }
 
     public void incrementUniques() {
+        // increment both unique counts in one go
         uniques.incrementAndGet();
         totalUniques.incrementAndGet();
     }

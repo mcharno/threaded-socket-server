@@ -6,19 +6,20 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.BitSet;
 
 public class InternalDataRepository implements Repository {
-    private static Set<String> idStore = new HashSet<>();
+    private static final String OUTPUT_FILE = "numbers.log";
+    private static BitSet idStore = new BitSet(); // super powered Set to just store binary values at each "id" location
     private static InputStatus status = new InputStatus();
     private static BufferedWriter writer;
 
-    public boolean log(String input) {
-        boolean logged = idStore.add(input);
-        if (logged) {
+    public void log(String input) {
+        if (!idStore.get(Integer.valueOf(input))) {
+        idStore.set(Integer.valueOf(input));
             try {
-                if (writer == null) writer = Files.newBufferedWriter(Paths.get("numbers.log"));
+                // lazily check and create the writer here rather than in a constructor, and keep open indefinitely
+                if (writer == null) writer = Files.newBufferedWriter(Paths.get(OUTPUT_FILE));
                 writer.write(String.format("%s%n", input));
             } catch (IOException ioex) {
                 ioex.printStackTrace();
@@ -27,7 +28,6 @@ public class InternalDataRepository implements Repository {
         } else {
             status.incrementDuplicates();
         }
-        return logged;
     }
 
     public String getStatus() {
@@ -41,6 +41,7 @@ public class InternalDataRepository implements Repository {
 
     public void close() {
         try {
+            // only close the writer at the very end to keep IO optimal, at the risk of not closing it formally
             writer.close();
         } catch (IOException ioex) {
             ioex.printStackTrace();
